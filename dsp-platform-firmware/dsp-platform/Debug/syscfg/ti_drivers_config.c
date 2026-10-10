@@ -18,6 +18,55 @@
 #include "ti_drivers_config.h"
 
 /*
+ *  =============================== ADC ===============================
+ */
+
+#include <ti/drivers/ADC.h>
+#include <ti/drivers/adc/ADCLPF3.h>
+#include <ti/drivers/GPIO.h>
+
+#define CONFIG_ADC_COUNT 1
+
+/*
+ *  ======== ADCLPF3_objects ========
+ */
+ADCLPF3_Object ADCLPF3_objects[CONFIG_ADC_COUNT];
+
+/*
+ *  ======== ADCLPF3_hwAttrs ========
+ */
+const ADCLPF3_HWAttrs ADCLPF3_hwAttrs[CONFIG_ADC_COUNT] = {
+    /* CONFIG_ADC_0 */
+    {
+        .adcInputDIO         = CONFIG_GPIO_ADC_0_CHANNEL,
+        .adcRefPosDIO        = GPIO_INVALID_INDEX,
+        .adcRefNegDIO        = GPIO_INVALID_INDEX,
+        .internalChannel     = 5,
+        .refSource           = ADCLPF3_VDDS_REFERENCE,
+        .samplingDuration    = 32,
+        .refVoltage          = 3300000,
+        .returnAdjustedVal   = false,
+        .resolutionBits      = ADCLPF3_RESOLUTION_12_BIT,
+        .adcClkkDivider      = ADCLPF3_CLKDIV_8
+    },
+};
+
+/*
+ *  ======== ADC_config ========
+ */
+const ADC_Config ADC_config[CONFIG_ADC_COUNT] = {
+    /* CONFIG_ADC_0 */
+    {
+        .fxnTablePtr    = &ADCLPF3_fxnTable,
+        .object         = &ADCLPF3_objects[CONFIG_ADC_0],
+        .hwAttrs        = &ADCLPF3_hwAttrs[CONFIG_ADC_0]
+    },
+};
+
+const uint_least8_t CONFIG_ADC_0_CONST = CONFIG_ADC_0;
+const uint_least8_t ADC_count = CONFIG_ADC_COUNT;
+
+/*
  *  =============================== GPIO ===============================
  */
 
@@ -32,7 +81,8 @@ const uint_least8_t GPIO_pinUpperBound = 25;
  *  Array of Pin configurations
  */
 GPIO_PinConfig gpioPinConfigs[26] = {
-    GPIO_CFG_NO_DIR, /* DIO_0 */
+    /* Owned by CONFIG_ADC_0_CHANNEL as ADC_0_CHANNEL */
+    GPIO_CFG_INPUT_INTERNAL | GPIO_CFG_IN_INT_NONE | GPIO_CFG_PULL_NONE_INTERNAL, /* CONFIG_GPIO_ADC_0_CHANNEL */
     GPIO_CFG_NO_DIR, /* DIO_1 */
     GPIO_CFG_NO_DIR, /* DIO_2 */
     GPIO_CFG_NO_DIR, /* DIO_3 */
@@ -75,6 +125,7 @@ GPIO_CallbackFxn gpioCallbackFunctions[26];
  */
 void* gpioUserArgs[26];
 
+const uint_least8_t CONFIG_GPIO_ADC_0_CHANNEL_CONST = CONFIG_GPIO_ADC_0_CHANNEL;
 const uint_least8_t CONFIG_DAC_GPIO_0_CONST = CONFIG_DAC_GPIO_0;
 const uint_least8_t CONFIG_DAC_GPIO_1_CONST = CONFIG_DAC_GPIO_1;
 const uint_least8_t CONFIG_DAC_GPIO_2_CONST = CONFIG_DAC_GPIO_2;
@@ -105,7 +156,7 @@ const GPIO_Config GPIO_config = {
 #include <ti/devices/cc23x0r5/inc/hw_memmap.h>
 #include <ti/devices/cc23x0r5/inc/hw_ints.h>
 
-#define CONFIG_LGPTIMER_COUNT 1
+#define CONFIG_LGPTIMER_COUNT 2
 
 /*
  *  ======== LGPTimerLPF3_objects ========
@@ -140,6 +191,30 @@ static const LGPTimerLPF3_HWAttrs LGPTimerLPF3_hwAttrs[CONFIG_LGPTIMER_COUNT] = 
         .nPinMux = GPIO_MUX_GPIO_INTERNAL,
     },
   },
+  {
+    .baseAddr           = LGPT0_BASE,
+    .intNum             = INT_LGPT0_COMB,
+    .intPriority        = (~0),
+    .powerID            = PowerLPF3_PERIPH_LGPT0,
+    .channelConfig[0]   = {
+        .pin     = GPIO_INVALID_INDEX,
+        .pinMux  = GPIO_MUX_GPIO_INTERNAL,
+        .nPin    = GPIO_INVALID_INDEX,
+        .nPinMux = GPIO_MUX_GPIO_INTERNAL,
+    },
+    .channelConfig[1]   = {
+        .pin     = GPIO_INVALID_INDEX,
+        .pinMux  = GPIO_MUX_GPIO_INTERNAL,
+        .nPin    = GPIO_INVALID_INDEX,
+        .nPinMux = GPIO_MUX_GPIO_INTERNAL,
+    },
+    .channelConfig[2]   = {
+        .pin     = GPIO_INVALID_INDEX,
+        .pinMux  = GPIO_MUX_GPIO_INTERNAL,
+        .nPin    = GPIO_INVALID_INDEX,
+        .nPinMux = GPIO_MUX_GPIO_INTERNAL,
+    },
+  },
 };
 
 /*
@@ -150,9 +225,14 @@ const LGPTimerLPF3_Config LGPTimerLPF3_config[CONFIG_LGPTIMER_COUNT] = {
         .object      = &LGPTimerLPF3_objects[CONFIG_LGPTIMER_0],
         .hwAttrs     = &LGPTimerLPF3_hwAttrs[CONFIG_LGPTIMER_0]
     },
+    {   /* CONFIG_LGPTIMER_1 */
+        .object      = &LGPTimerLPF3_objects[CONFIG_LGPTIMER_1],
+        .hwAttrs     = &LGPTimerLPF3_hwAttrs[CONFIG_LGPTIMER_1]
+    },
 };
 
 const uint_least8_t CONFIG_LGPTIMER_0_CONST = CONFIG_LGPTIMER_0;
+const uint_least8_t CONFIG_LGPTIMER_1_CONST = CONFIG_LGPTIMER_1;
 const uint_least8_t LGPTimerLPF3_count = CONFIG_LGPTIMER_COUNT;
 
 /*

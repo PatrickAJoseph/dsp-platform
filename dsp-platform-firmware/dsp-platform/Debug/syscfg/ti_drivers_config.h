@@ -34,8 +34,21 @@ extern "C" {
 
 
 /*
+ *  ======== ADC ========
+ */
+
+extern const uint_least8_t              CONFIG_ADC_0_CONST;
+#define CONFIG_ADC_0                    0
+#define CONFIG_TI_DRIVERS_ADC_COUNT     1
+
+
+/*
  *  ======== GPIO ========
  */
+/* Owned by CONFIG_ADC_0_CHANNEL as  */
+extern const uint_least8_t CONFIG_GPIO_ADC_0_CHANNEL_CONST;
+#define CONFIG_GPIO_ADC_0_CHANNEL 0
+
 extern const uint_least8_t CONFIG_DAC_GPIO_0_CONST;
 #define CONFIG_DAC_GPIO_0 12
 
@@ -85,7 +98,13 @@ extern const uint_least8_t GPIO_pinUpperBound;
  */
 extern const uint_least8_t                  CONFIG_LGPTIMER_0_CONST;
 #define CONFIG_LGPTIMER_0                   0
-#define CONFIG_TI_DRIVERS_LGPTIMER_COUNT    1
+/*
+ *  CH2: Unassigned
+ *  CH2N: Unassigned
+ */
+extern const uint_least8_t                  CONFIG_LGPTIMER_1_CONST;
+#define CONFIG_LGPTIMER_1                   1
+#define CONFIG_TI_DRIVERS_LGPTIMER_COUNT    2
 
 
 /*

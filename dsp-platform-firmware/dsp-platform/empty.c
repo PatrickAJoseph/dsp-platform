@@ -11,19 +11,37 @@
 #include <ti/devices/cc23x0r5/inc/hw_memmap.h>
 #include <ti/devices/cc23x0r5/inc/hw_gpio.h>
 #include <ti/drivers/dpl/HwiP.h>
+#include <ti/drivers/Power.h>
 
 /* Application header files. */
 #include "dds.h"
+#include "dsp.h"
+#include "remote.h"
+
+static uint8_t sampleDspFunction(uint8_t sample, void* args)
+{
+    return sample;
+}
 
 void *mainThread(void *arg0)
 {
     Board_init();
+    
+    Power_setConstraint(PowerLPF3_DISALLOW_STANDBY);
+
+    GPIO_init();
+    ADC_init();
 
     DDS_init();
+    DDS_setFrequency(100);
+
+    DSP_init();
+    DSP_setLoopFrequency(10000);
+    DSP_setFunction(sampleDspFunction, NULL);
+    DSP_start();
 
     while (1)
     {
-        DDS_setFrequency(100);
         sleep(1);
     }
 }

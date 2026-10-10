@@ -10,6 +10,8 @@
  * Import the modules used in this configuration.
  */
 const FreeRTOS  = scripting.addModule("/freertos/FreeRTOS");
+const ADC       = scripting.addModule("/ti/drivers/ADC", {}, false);
+const ADC1      = ADC.addInstance();
 const GPIO      = scripting.addModule("/ti/drivers/GPIO");
 const GPIO1     = GPIO.addInstance();
 const GPIO2     = GPIO.addInstance();
@@ -22,12 +24,18 @@ const GPIO8     = GPIO.addInstance();
 const GPIO9     = GPIO.addInstance();
 const LGPTimer  = scripting.addModule("/ti/drivers/LGPTimer", {}, false);
 const LGPTimer1 = LGPTimer.addInstance();
+const LGPTimer2 = LGPTimer.addInstance();
 const Power     = scripting.addModule("/ti/drivers/Power");
 const Settings  = scripting.addModule("/ti/posix/freertos/Settings");
 
 /**
  * Write custom configuration values to the imported modules.
  */
+ADC1.$name                         = "CONFIG_ADC_0";
+ADC1.adcSampleTime                 = 32;
+ADC1.adcChannel.adc.$assign        = "ADC";
+ADC1.adcChannel.adc.adcPin.$assign = "boosterpack.10";
+
 GPIO1.$name           = "CONFIG_DAC_GPIO_0";
 GPIO1.mode            = "Output";
 GPIO1.outputStrength  = "High";
@@ -76,5 +84,14 @@ GPIO9.gpioPin.$assign = "boosterpack.12";
 LGPTimer1.$name         = "CONFIG_LGPTIMER_0";
 LGPTimer1.timer.$assign = "LGPT3";
 
+LGPTimer2.$name = "CONFIG_LGPTIMER_1";
+
 const CCFG              = scripting.addModule("/ti/devices/CCFG", {}, false);
 CCFG.ccfgTemplate.$name = "ti_devices_CCFG_CCFGCC23X0Template0";
+
+/**
+ * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
+ * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
+ * re-solve from scratch.
+ */
+LGPTimer2.timer.$suggestSolution = "LGPT0";

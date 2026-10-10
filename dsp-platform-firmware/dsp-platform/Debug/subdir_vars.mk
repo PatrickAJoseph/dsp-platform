@@ -13,6 +13,7 @@ LDS_SRCS += \
 
 C_SRCS += \
 ../dds.c \
+../dsp.c \
 ../empty.c \
 ./syscfg/ti_devices_config.c \
 ./syscfg/ti_drivers_config.c \
@@ -32,6 +33,7 @@ GEN_MISC_DIRS += \
 
 C_DEPS += \
 ./dds.d \
+./dsp.d \
 ./empty.d \
 ./syscfg/ti_devices_config.d \
 ./syscfg/ti_drivers_config.d \
@@ -44,6 +46,7 @@ GEN_OPTS += \
 
 OBJS += \
 ./dds.o \
+./dsp.o \
 ./empty.o \
 ./syscfg/ti_devices_config.o \
 ./syscfg/ti_drivers_config.o \
@@ -63,6 +66,7 @@ GEN_MISC_DIRS__QUOTED += \
 
 OBJS__QUOTED += \
 "dds.o" \
+"dsp.o" \
 "empty.o" \
 "syscfg\ti_devices_config.o" \
 "syscfg\ti_drivers_config.o" \
@@ -79,6 +83,7 @@ GEN_MISC_FILES__QUOTED += \
 
 C_DEPS__QUOTED += \
 "dds.d" \
+"dsp.d" \
 "empty.d" \
 "syscfg\ti_devices_config.d" \
 "syscfg\ti_drivers_config.d" \
@@ -95,6 +100,7 @@ GEN_FILES__QUOTED += \
 
 C_SRCS__QUOTED += \
 "../dds.c" \
+"../dsp.c" \
 "../empty.c" \
 "./syscfg/ti_devices_config.c" \
 "./syscfg/ti_drivers_config.c" \

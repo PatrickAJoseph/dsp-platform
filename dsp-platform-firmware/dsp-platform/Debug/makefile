@@ -11,6 +11,7 @@ GEN_CMDS__FLAG :=
 
 ORDERED_OBJS += \
 "./dds.o" \
+"./dsp.o" \
 "./empty.o" \
 "./syscfg/ti_devices_config.o" \
 "./syscfg/ti_drivers_config.o" \
@@ -144,8 +145,8 @@ dsp-platform.out: $(OBJS) $(LDS_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(GEN_MISC_FILES__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "dds.o" "empty.o" "syscfg\ti_devices_config.o" "syscfg\ti_drivers_config.o" "syscfg\ti_freertos_config.o" "syscfg\ti_freertos_portable_config.o" "main_freertos.o" 
-	-$(RM) "dds.d" "empty.d" "syscfg\ti_devices_config.d" "syscfg\ti_drivers_config.d" "syscfg\ti_freertos_config.d" "syscfg\ti_freertos_portable_config.d" "main_freertos.d" 
+	-$(RM) "dds.o" "dsp.o" "empty.o" "syscfg\ti_devices_config.o" "syscfg\ti_drivers_config.o" "syscfg\ti_freertos_config.o" "syscfg\ti_freertos_portable_config.o" "main_freertos.o" 
+	-$(RM) "dds.d" "dsp.d" "empty.d" "syscfg\ti_devices_config.d" "syscfg\ti_drivers_config.d" "syscfg\ti_freertos_config.d" "syscfg\ti_freertos_portable_config.d" "main_freertos.d" 
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
 	-@echo ' '
 
