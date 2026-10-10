@@ -1,0 +1,3 @@
+[submodule "serial-rpc"]
+	path = serial-rpc
+	url = https://github.com/PatrickAJoseph/serial-rpc.git

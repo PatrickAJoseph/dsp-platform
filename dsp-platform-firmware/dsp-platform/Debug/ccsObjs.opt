@@ -1,0 +1,12 @@
+"./dds.o"
+"./empty.o"
+"./syscfg/ti_devices_config.o"
+"./syscfg/ti_drivers_config.o"
+"./syscfg/ti_freertos_config.o"
+"./syscfg/ti_freertos_portable_config.o"
+"./main_freertos.o"
+-Wl,-T"../lpf3_cc23xx_freertos.lds"
+-l:ti_utils_build_linker.cmd.genlibs
+-lgcc
+-lc
+-lm
