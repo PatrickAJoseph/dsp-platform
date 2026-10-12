@@ -36,11 +36,24 @@ syscfg/ti_drivers_config.o: syscfg/ti_drivers_config.c \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/GPIO.h \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/gpio/GPIOLPF3.h \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_ioc.h \
+ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/dma/UDMALPF3.h \
+ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/udma.h \
+ c:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_ints.h \
+ c:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_dma.h \
+ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/debug.h \
+ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/interrupt.h \
+ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/cpu.h \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/timer/LGPTimerLPF3.h \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_lgpt.h \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_ints.h \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/ckmd.h \
  c:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_ckmd.h \
+ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/UART2.h \
+ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/dpl/SemaphoreP.h \
+ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/utils/RingBuf.h \
+ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/uart2/UART2LPF3.h \
+ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/evtsvt.h \
+ c:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_evtsvt.h \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/cpu.h \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/Board.h
 
@@ -114,6 +127,20 @@ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/gpio/GPIOLPF3.h:
 
 C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_ioc.h:
 
+C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/dma/UDMALPF3.h:
+
+C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/udma.h:
+
+c:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_ints.h:
+
+c:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_dma.h:
+
+C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/debug.h:
+
+C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/interrupt.h:
+
+C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/cpu.h:
+
 C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/timer/LGPTimerLPF3.h:
 
 C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_lgpt.h:
@@ -123,6 +150,18 @@ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_in
 C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/ckmd.h:
 
 c:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_ckmd.h:
+
+C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/UART2.h:
+
+C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/dpl/SemaphoreP.h:
+
+C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/utils/RingBuf.h:
+
+C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/drivers/uart2/UART2LPF3.h:
+
+C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/evtsvt.h:
+
+c:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_evtsvt.h:
 
 C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/driverlib/cpu.h:
 

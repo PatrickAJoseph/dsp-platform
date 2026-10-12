@@ -1,0 +1,116 @@
+commands:
+  - name: ping
+    id: 0x00
+        
+    request_parameters:
+      - name: reset
+        type: uint8
+        is_a_list: false
+    
+    response_parameters:
+      - name: counter
+        type: uint32
+        is_a_list: false
+
+  - name: input_signal_control
+    id: 0x01
+    
+    request_parameters:
+      - name: frequency
+        type: uint16
+        is_a_list: false
+
+    response_parameters:
+      - name: dummy
+        type: uint8
+        is_a_list: false
+    
+  - name: dsp_control
+    id: 0x02
+    
+    request_parameters:
+      - name: stop
+        type: uint8
+        is_a_list: false
+      
+      - name: reset
+        type: uint8
+        is_a_list: false
+      
+      - name: start
+        type: uint8
+        is_a_list: false
+
+      - name: set_sampling_rate
+        type: uint8
+        is_a_list: false
+
+      - name: sampling_rate
+        type: uint16
+        is_a_list: false
+        
+      - name: set_number_of_samples
+        type: uint8
+        is_a_list: false
+      
+      - name: number_of_samples
+        type: uint16
+        is_a_list: false
+
+    response_parameters:
+      - name: dummy
+        type: uint8
+        is_a_list: false
+
+  - name: dsp_status
+    id: 0x03
+    
+    request_parameters:
+      - name: dummy
+        type: uint8
+        is_a_list: false
+    
+    response_parameters:
+      - name: sample_buffer_size
+        type: uint16
+        is_a_list: false
+      
+      - name: number_of_samples
+        type: uint16
+        is_a_list: false        
+
+  - name: dsp_get_samples
+    id: 0x04
+    
+    request_parameters:
+      - name: index
+        type: uint16
+        is_a_list: false
+
+      - name: length
+        type: uint8
+        is_a_list: false
+
+    response_parameters:
+      - name: length
+        type: uint8
+        is_a_list: false
+
+      - name: input_samples
+        type: uint8
+        is_a_list: true
+        length_parameter: length
+        
+      - name: output_samples
+        type: uint8
+        is_a_list: true
+        length_parameter: length
+
+notifications:
+  - name: dummy
+    id: 0x00
+    
+    notification_parameters:
+      - name: dummy
+        type: uint8
+        is_a_list: false

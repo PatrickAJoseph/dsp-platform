@@ -32,16 +32,16 @@ void *mainThread(void *arg0)
     GPIO_init();
     ADC_init();
 
+    Remote_init();
+
     DDS_init();
     DDS_setFrequency(100);
 
     DSP_init();
-    DSP_setLoopFrequency(10000);
     DSP_setFunction(sampleDspFunction, NULL);
-    DSP_start();
 
     while (1)
     {
-        sleep(1);
+        Remote_process();
     }
 }

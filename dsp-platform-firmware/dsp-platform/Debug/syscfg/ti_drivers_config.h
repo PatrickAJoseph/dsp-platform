@@ -76,6 +76,14 @@ extern const uint_least8_t CONFIG_DAC_GPIO_7_CONST;
 extern const uint_least8_t CONFIG_TEST_GPIO_CONST;
 #define CONFIG_TEST_GPIO 9
 
+/* Owned by CONFIG_UART2_0 as  */
+extern const uint_least8_t CONFIG_GPIO_UART2_0_TX_CONST;
+#define CONFIG_GPIO_UART2_0_TX 20
+
+/* Owned by CONFIG_UART2_0 as  */
+extern const uint_least8_t CONFIG_GPIO_UART2_0_RX_CONST;
+#define CONFIG_GPIO_UART2_0_RX 22
+
 /* The range of pins available on this device */
 extern const uint_least8_t GPIO_pinLowerBound;
 extern const uint_least8_t GPIO_pinUpperBound;
@@ -105,6 +113,20 @@ extern const uint_least8_t                  CONFIG_LGPTIMER_0_CONST;
 extern const uint_least8_t                  CONFIG_LGPTIMER_1_CONST;
 #define CONFIG_LGPTIMER_1                   1
 #define CONFIG_TI_DRIVERS_LGPTIMER_COUNT    2
+
+
+/*
+ *  ======== UART2 ========
+ */
+
+/*
+ *  TX: DIO20A11
+ *  RX: DIO22A9
+ *  XDS110 UART
+ */
+extern const uint_least8_t                  CONFIG_UART2_0_CONST;
+#define CONFIG_UART2_0                      0
+#define CONFIG_TI_DRIVERS_UART2_COUNT       1
 
 
 /*

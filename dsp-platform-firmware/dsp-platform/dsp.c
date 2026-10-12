@@ -44,6 +44,9 @@ static void* dspFunctionArgs = NULL;
 uint8_t DSP_inputBuffer[DSP_SAMPLE_SIZE];
 uint8_t DSP_outputBuffer[DSP_SAMPLE_SIZE];
 
+/* Number of samples to be processed. */
+int DSP_numberOfSamplesToGather = 0;
+
 /* DSP sample index. */
 int DSP_sampleIndex = 0;
 
@@ -172,7 +175,7 @@ static void dspTimerIsr(LGPTimerLPF3_Handle handle, LGPTimerLPF3_IntMask interru
         __asm volatile("bkpt 0");
     }
 
-    if(DSP_sampleIndex < DSP_SAMPLE_SIZE)
+    if(DSP_sampleIndex < DSP_numberOfSamplesToGather)
     {
         DSP_inputBuffer[DSP_sampleIndex] = (uint8_t)(adcResult >> 4);
 
@@ -191,7 +194,7 @@ static void dspTimerIsr(LGPTimerLPF3_Handle handle, LGPTimerLPF3_IntMask interru
     {
         if(dspFunction)
         {
-            (void)dspFunction(DSP_inputBuffer[DSP_sampleIndex],dspFunctionArgs);
+            (void)dspFunction(adcResult ,dspFunctionArgs);
         }
     }
 
@@ -259,7 +262,12 @@ void DSP_stop()
     LGPTimerLPF3_stop(dspTimerHandle);
 }
 
-void DSP_numberOfSamples()
+void DSP_setNumberOfSamples(int numberOfSamples)
+{
+    DSP_numberOfSamplesToGather = numberOfSamples;
+}
+
+int DSP_numberOfSamples()
 {
     return DSP_sampleIndex;
 }

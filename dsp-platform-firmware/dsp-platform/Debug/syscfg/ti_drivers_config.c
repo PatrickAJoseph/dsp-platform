@@ -67,6 +67,17 @@ const uint_least8_t CONFIG_ADC_0_CONST = CONFIG_ADC_0;
 const uint_least8_t ADC_count = CONFIG_ADC_COUNT;
 
 /*
+ *  =============================== DMA ===============================
+ */
+
+#include <ti/drivers/dma/UDMALPF3.h>
+#include <ti/devices/cc23x0r5/inc/hw_memmap.h>
+
+const UDMALPF3_Config UDMALPF3_config = {
+        .CtrlBaseAddr = UDMALPF3_CONFIG_BASE,
+};
+
+/*
  *  =============================== GPIO ===============================
  */
 
@@ -102,9 +113,11 @@ GPIO_PinConfig gpioPinConfigs[26] = {
     GPIO_CFG_DO_NOT_CONFIG, /* DIO_17 */
     GPIO_CFG_NO_DIR, /* DIO_18 */
     GPIO_CFG_OUTPUT_INTERNAL | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW, /* CONFIG_DAC_GPIO_2 */
-    GPIO_CFG_NO_DIR, /* DIO_20 */
+    /* Owned by CONFIG_UART2_0 as TX */
+    GPIO_CFG_OUTPUT_INTERNAL | GPIO_CFG_OUT_STR_MED | GPIO_CFG_OUT_HIGH, /* CONFIG_GPIO_UART2_0_TX */
     GPIO_CFG_OUTPUT_INTERNAL | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW, /* CONFIG_DAC_GPIO_4 */
-    GPIO_CFG_NO_DIR, /* DIO_22 */
+    /* Owned by CONFIG_UART2_0 as RX */
+    GPIO_CFG_INPUT_INTERNAL | GPIO_CFG_IN_INT_NONE | GPIO_CFG_PULL_DOWN_INTERNAL, /* CONFIG_GPIO_UART2_0_RX */
     GPIO_CFG_NO_DIR, /* DIO_23 */
     GPIO_CFG_NO_DIR, /* DIO_24 */
     GPIO_CFG_NO_DIR, /* DIO_25 */
@@ -135,6 +148,8 @@ const uint_least8_t CONFIG_DAC_GPIO_5_CONST = CONFIG_DAC_GPIO_5;
 const uint_least8_t CONFIG_DAC_GPIO_6_CONST = CONFIG_DAC_GPIO_6;
 const uint_least8_t CONFIG_DAC_GPIO_7_CONST = CONFIG_DAC_GPIO_7;
 const uint_least8_t CONFIG_TEST_GPIO_CONST = CONFIG_TEST_GPIO;
+const uint_least8_t CONFIG_GPIO_UART2_0_TX_CONST = CONFIG_GPIO_UART2_0_TX;
+const uint_least8_t CONFIG_GPIO_UART2_0_RX_CONST = CONFIG_GPIO_UART2_0_RX;
 
 /*
  *  ======== GPIO_config ========
@@ -170,7 +185,7 @@ static const LGPTimerLPF3_HWAttrs LGPTimerLPF3_hwAttrs[CONFIG_LGPTIMER_COUNT] = 
   {
     .baseAddr           = LGPT3_BASE,
     .intNum             = INT_LGPT3_COMB,
-    .intPriority        = (~0),
+    .intPriority        = 0x40,
     .powerID            = PowerLPF3_PERIPH_LGPT3,
     .channelConfig[0]   = {
         .pin     = GPIO_INVALID_INDEX,
@@ -194,7 +209,7 @@ static const LGPTimerLPF3_HWAttrs LGPTimerLPF3_hwAttrs[CONFIG_LGPTIMER_COUNT] = 
   {
     .baseAddr           = LGPT0_BASE,
     .intNum             = INT_LGPT0_COMB,
-    .intPriority        = (~0),
+    .intPriority        = 0x80,
     .powerID            = PowerLPF3_PERIPH_LGPT0,
     .channelConfig[0]   = {
         .pin     = GPIO_INVALID_INDEX,
@@ -255,6 +270,79 @@ const PowerCC23X0_Config PowerCC23X0_config = {
     .policyFxn                  = PowerCC23X0_standbyPolicy,
     .startInitialHfxtAmpCompFxn = NULL,
 };
+
+/*
+ *  =============================== UART2 ===============================
+ */
+
+#include <ti/drivers/UART2.h>
+#include <ti/drivers/uart2/UART2LPF3.h>
+#include <ti/drivers/GPIO.h>
+#include <ti/drivers/Power.h>
+#include <ti/drivers/dma/UDMALPF3.h>
+#include <ti/drivers/Power.h>
+
+#include <ti/devices/DeviceFamily.h>
+#include DeviceFamily_constructPath(inc/hw_memmap.h)
+#include DeviceFamily_constructPath(inc/hw_ints.h)
+#include DeviceFamily_constructPath(driverlib/evtsvt.h)
+
+#define CONFIG_UART2_COUNT 1
+
+UART2LPF3_Object UART2LPF3_objects[CONFIG_UART2_COUNT];
+
+static unsigned char uart2RxRingBuffer0[256];
+/* TX ring buffer allocated to be used for nonblocking mode */
+static unsigned char uart2TxRingBuffer0[256];
+
+
+
+ALLOCATE_CONTROL_TABLE_ENTRY(dmaChannel0ControlTableEntry, 0);
+ALLOCATE_CONTROL_TABLE_ENTRY(dmaChannel1ControlTableEntry, 1);
+
+static const UART2LPF3_HWAttrs UART2LPF3_hwAttrs[CONFIG_UART2_COUNT] = {
+  {
+    .baseAddr              = UART0_BASE,
+    .intNum                = INT_UART0_COMB,
+    .intPriority           = (~0),
+    .rxPin                 = CONFIG_GPIO_UART2_0_RX,
+    .txPin                 = CONFIG_GPIO_UART2_0_TX,
+    .ctsPin                = GPIO_INVALID_INDEX,
+    .rtsPin                = GPIO_INVALID_INDEX,
+    .flowControl           = UART2_FLOWCTRL_NONE,
+    .rxBufPtr              = uart2RxRingBuffer0,
+    .rxBufSize             = sizeof(uart2RxRingBuffer0),
+    .txBufPtr              = uart2TxRingBuffer0,
+    .txBufSize             = sizeof(uart2TxRingBuffer0),
+    .txPinMux              = GPIO_MUX_PORTCFG_PFUNC2,
+    .rxPinMux              = GPIO_MUX_PORTCFG_PFUNC2,
+    .ctsPinMux             = GPIO_MUX_GPIO_INTERNAL,
+    .rtsPinMux             = GPIO_MUX_GPIO_INTERNAL,
+    .dmaRxTableEntryPri    = &dmaChannel0ControlTableEntry,
+    .dmaTxTableEntryPri    = &dmaChannel1ControlTableEntry,
+    .rxChannelMask         = UDMA_CHANNEL_0_M,
+    .txChannelMask         = UDMA_CHANNEL_1_M,
+    .rxChannelEvtMux       = EVTSVT_DMA_TRIG_UART0RXTRG,
+    .txChannelEvtMux       = EVTSVT_DMA_TRIG_UART0TXTRG,
+    .txChannelSubscriberId = EVTSVT_DMA_CH1,
+    .rxChannelSubscriberId = EVTSVT_DMA_CH0,
+    .codingScheme          = UART2LPF3_CODING_UART,
+    .concatenateFIFO       = false,
+    .irLPClkDivider        = 8,
+    .powerID               = PowerLPF3_PERIPH_UART0
+  },
+};
+
+const UART2_Config UART2_config[CONFIG_UART2_COUNT] = {
+    {   /* CONFIG_UART2_0 */
+        .object      = &UART2LPF3_objects[CONFIG_UART2_0],
+        .hwAttrs     = &UART2LPF3_hwAttrs[CONFIG_UART2_0]
+    },
+};
+
+const uint_least8_t CONFIG_UART2_0_CONST = CONFIG_UART2_0;
+const uint_least8_t UART2_count = CONFIG_UART2_COUNT;
+
 
 #include <stdbool.h>
 
@@ -385,6 +473,9 @@ void Board_init(void)
     /* ==== /ti/drivers/GPIO initialization ==== */
     /* Setup GPIO module and default-initialise pins */
     GPIO_init();
+
+    /* ==== /ti/drivers/DMA initialization ==== */
+    UDMALPF3_init();
 
     Board_shutDownExtFlash();
 

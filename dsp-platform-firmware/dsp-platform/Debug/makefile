@@ -18,6 +18,8 @@ ORDERED_OBJS += \
 "./syscfg/ti_freertos_config.o" \
 "./syscfg/ti_freertos_portable_config.o" \
 "./main_freertos.o" \
+"./remote.o" \
+"./serial_rpc.o" \
 -Wl,-T"../lpf3_cc23xx_freertos.lds" \
 $(GEN_CMDS__FLAG) \
 -l:ti_utils_build_linker.cmd.genlibs \
@@ -145,8 +147,8 @@ dsp-platform.out: $(OBJS) $(LDS_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(GEN_MISC_FILES__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "dds.o" "dsp.o" "empty.o" "syscfg\ti_devices_config.o" "syscfg\ti_drivers_config.o" "syscfg\ti_freertos_config.o" "syscfg\ti_freertos_portable_config.o" "main_freertos.o" 
-	-$(RM) "dds.d" "dsp.d" "empty.d" "syscfg\ti_devices_config.d" "syscfg\ti_drivers_config.d" "syscfg\ti_freertos_config.d" "syscfg\ti_freertos_portable_config.d" "main_freertos.d" 
+	-$(RM) "dds.o" "dsp.o" "empty.o" "syscfg\ti_devices_config.o" "syscfg\ti_drivers_config.o" "syscfg\ti_freertos_config.o" "syscfg\ti_freertos_portable_config.o" "main_freertos.o" "remote.o" "serial_rpc.o" 
+	-$(RM) "dds.d" "dsp.d" "empty.d" "syscfg\ti_devices_config.d" "syscfg\ti_drivers_config.d" "syscfg\ti_freertos_config.d" "syscfg\ti_freertos_portable_config.d" "main_freertos.d" "remote.d" "serial_rpc.d" 
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
 	-@echo ' '
 

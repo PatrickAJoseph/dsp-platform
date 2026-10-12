@@ -30,6 +30,7 @@ extern void DSP_setFunction(dsp_function_t function, void* args);
 extern void DSP_reset();
 extern void DSP_start();
 extern void DSP_stop();
+extern void DSP_setNumberOfSamples(int numberOfSamples);
 extern int DSP_numberOfSamples();
 extern int DSP_getSampleBufferSize();
 extern uint8_t DSP_getInputSample(int index);

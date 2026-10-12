@@ -6,6 +6,8 @@
 "./syscfg/ti_freertos_config.o"
 "./syscfg/ti_freertos_portable_config.o"
 "./main_freertos.o"
+"./remote.o"
+"./serial_rpc.o"
 -Wl,-T"../lpf3_cc23xx_freertos.lds"
 -l:ti_utils_build_linker.cmd.genlibs
 -lgcc

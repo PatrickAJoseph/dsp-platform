@@ -29,7 +29,7 @@ empty.o: ../empty.c \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_lgpt.h \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_ints.h \
  C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_gpio.h \
- ../dds.h ../dsp.h
+ ../dds.h ../dsp.h ../remote.h
 
 C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/posix/gcc/unistd.h:
 
@@ -90,3 +90,5 @@ C:/ti/simplelink_lowpower_f3_sdk_9_14_01_16/source/ti/devices/cc23x0r5/inc/hw_gp
 ../dds.h:
 
 ../dsp.h:
+
+../remote.h:

@@ -26,6 +26,8 @@ const LGPTimer  = scripting.addModule("/ti/drivers/LGPTimer", {}, false);
 const LGPTimer1 = LGPTimer.addInstance();
 const LGPTimer2 = LGPTimer.addInstance();
 const Power     = scripting.addModule("/ti/drivers/Power");
+const UART2     = scripting.addModule("/ti/drivers/UART2", {}, false);
+const UART21    = UART2.addInstance();
 const Settings  = scripting.addModule("/ti/posix/freertos/Settings");
 
 /**
@@ -81,17 +83,29 @@ GPIO9.outputStrength  = "High";
 GPIO9.$name           = "CONFIG_TEST_GPIO";
 GPIO9.gpioPin.$assign = "boosterpack.12";
 
-LGPTimer1.$name         = "CONFIG_LGPTIMER_0";
-LGPTimer1.timer.$assign = "LGPT3";
+LGPTimer1.$name             = "CONFIG_LGPTIMER_0";
+LGPTimer1.interruptPriority = "1";
+LGPTimer1.timer.$assign     = "LGPT3";
 
-LGPTimer2.$name = "CONFIG_LGPTIMER_1";
+LGPTimer2.$name             = "CONFIG_LGPTIMER_1";
+LGPTimer2.interruptPriority = "2";
 
 const CCFG              = scripting.addModule("/ti/devices/CCFG", {}, false);
 CCFG.ccfgTemplate.$name = "ti_devices_CCFG_CCFGCC23X0Template0";
+
+UART21.$name            = "CONFIG_UART2_0";
+UART21.$hardware        = system.deviceData.board.components.XDS110UART;
+UART21.rxRingBufferSize = 256;
+UART21.txRingBufferSize = 256;
 
 /**
  * Pinmux solution for unlocked pins/peripherals. This ensures that minor changes to the automatic solver in a future
  * version of the tool will not impact the pinmux you originally saw.  These lines can be completely deleted in order to
  * re-solve from scratch.
  */
-LGPTimer2.timer.$suggestSolution = "LGPT0";
+LGPTimer2.timer.$suggestSolution          = "LGPT0";
+UART21.uart.$suggestSolution              = "UART0";
+UART21.uart.dmaTxChannel.$suggestSolution = "DMA_CH1";
+UART21.uart.dmaRxChannel.$suggestSolution = "DMA_CH0";
+UART21.uart.txPin.$suggestSolution        = "boosterpack.4";
+UART21.uart.rxPin.$suggestSolution        = "boosterpack.3";
