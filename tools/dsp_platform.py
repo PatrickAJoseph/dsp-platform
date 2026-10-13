@@ -4,6 +4,7 @@ import time
 import pytest
 from matplotlib import pyplot as plt
 import numpy as np
+import csv
 
 PORT_NAME = 'COM8'
 BAUD_RATE = 460800
@@ -134,47 +135,60 @@ def plot_input_and_output_waveforms(timestamp, input_samples, output_samples):
     plt.tight_layout()
     plt.show()
 
-def get_phase_and_amplitude( timestamp, input_frequency, input_samples, output_samples ):
+
+def get_phase_and_amplitude(
+    timestamp,
+    input_frequency,
+    input_samples,
+    output_samples
+):
     t = np.asarray(timestamp, dtype=float)
     x = np.asarray(input_samples, dtype=float)
     y = np.asarray(output_samples, dtype=float)
 
-    x1 = x - np.mean(x)
-    y1 = y - np.mean(y)
+    if not (len(t) == len(x) == len(y)):
+        raise ValueError("Sample arrays must have equal lengths")
 
-    x_pp = np.ptp(x1)
-    y_pp = np.ptp(y1)
+    if len(t) < 4:
+        raise ValueError("Insufficient samples")
 
-    if x_pp == 0:
-        raise ValueError("Input signal has zero amplitude")
+    if input_frequency <= 0:
+        raise ValueError("Frequency must be positive")
 
-    amplitude = y_pp / x_pp
+    # Fit both signals to:
+    # signal = A*sin(w*t) + B*cos(w*t) + DC
+    omega_t = 2.0 * np.pi * input_frequency * t
 
-    def positive_zero_crossing_times(signal):
-        indices = np.flatnonzero( (signal[:-1] <= 0) & (signal[1:] > 0) )
+    design_matrix = np.column_stack((
+        np.sin(omega_t),
+        np.cos(omega_t),
+        np.ones_like(t)
+    ))
 
-        fractions = ( -signal[indices] / (signal[indices + 1] - signal[indices]) )
+    cx, *_ = np.linalg.lstsq(design_matrix, x, rcond=None)
+    cy, *_ = np.linalg.lstsq(design_matrix, y, rcond=None)
 
-        return ( t[indices] + fractions * (t[indices + 1] - t[indices]) )
+    # Peak amplitudes of the fitted fundamental components
+    input_amplitude = np.hypot(cx[0], cx[1])
+    output_amplitude = np.hypot(cy[0], cy[1])
 
-    tx = positive_zero_crossing_times(x1)
-    ty = positive_zero_crossing_times(y1)
+    if input_amplitude < 1e-12:
+        raise ValueError("Input amplitude is too small")
 
-    count = min(len(tx), len(ty))
-    tx = tx[:count]
-    ty = ty[:count]
+    amplitude_ratio = output_amplitude / input_amplitude
 
-    dt = ty - tx
+    # Phase of A*sin(w*t) + B*cos(w*t)
+    input_phase = np.arctan2(cx[1], cx[0])
+    output_phase = np.arctan2(cy[1], cy[0])
 
-    phase = -360.0 * input_frequency * np.mean(dt)
-
+    phase = np.degrees(output_phase - input_phase)
     phase = (phase + 180.0) % 360.0 - 180.0
 
-    return amplitude, phase
+    return amplitude_ratio, phase
 
-def sweep(handle, start_frequency, end_frequency, number_of_steps):
+def sweep(handle, sampling_rate, start_frequency, end_frequency, number_of_steps):
     
-    step_frequency = (end_frequency - start_frequency) / number_of_steps
+    step_frequency = (end_frequency - start_frequency) // number_of_steps
     
     frequencies = []
     amplitudes= []
@@ -184,10 +198,11 @@ def sweep(handle, start_frequency, end_frequency, number_of_steps):
         frequencies.append(start_frequency + (float(i) * step_frequency))
 
     for f in frequencies:
-        sampling_rate = min( (100*f), 20000 )
         set_input_frequency(handle, f)
         
-        (t, _input, _output) = acquire(handle, sampling_rate = sampling_rate, input_frequency = f, number_of_cycles = 3)
+        time.sleep(10*(1/f) + 0.5)
+        
+        (t, _input, _output) = acquire(handle, sampling_rate = sampling_rate, input_frequency = f, number_of_cycles = 4)
         
         amplitude, phase = get_phase_and_amplitude( t, f, _input, _output )
         
@@ -196,9 +211,9 @@ def sweep(handle, start_frequency, end_frequency, number_of_steps):
     
     return (frequencies, amplitudes, phases)
 
-def plot_bode_plot(handle, start_frequency, end_frequency, number_of_steps):
+def plot_bode_plot(handle, sampling_rate, start_frequency, end_frequency, number_of_steps):
 
-    f, amp, pha = sweep(handle, start_frequency, end_frequency, number_of_steps)
+    f, amp, pha = sweep(handle, sampling_rate, start_frequency, end_frequency, number_of_steps)
 
     plt.figure()
     plt.subplot(2, 1, 1)
@@ -214,16 +229,31 @@ def plot_bode_plot(handle, start_frequency, end_frequency, number_of_steps):
 
     plt.tight_layout()
     plt.show()
-
     
+    return (f, amp, pha)
+
+def save_frequency_response(f, a, p):
+    
+    with open("bode_data.csv", "w", newline="") as file:
+        writer = csv.writer(file)
+
+        writer.writerow(["Frequency (Hz)", "Amplitude", "Phase (degrees)"])
+        
+        index = 0
+        
+        for _f in f:
+            writer.writerow([f[index], a[index], p[index]])
+            index = index + 1
+
 ########################################### Main function. ###########################################################
 
 handle = serial_rpc.serial_rpc(port_name = PORT_NAME, baud_rate = BAUD_RATE, parameter_file = 'dsp_platform.yaml')
 
 #set_input_frequency(handle, 250)
-#(timestamp, input_samples, output_samples) = acquire(handle, sampling_rate = 10000, input_frequency = 250, number_of_cycles = 5)
+#(timestamp, input_samples, output_samples) = acquire(handle, sampling_rate = 5000, input_frequency = 250, number_of_cycles = 5)
 #plot_input_and_output_waveforms(timestamp, input_samples, output_samples)
 
-plot_bode_plot(handle, 10, 1000, 100)
+(f, a, p) = plot_bode_plot(handle, 5000, 4, 500, 20)
+save_frequency_response(f,a,p)
 
 handle.close()
